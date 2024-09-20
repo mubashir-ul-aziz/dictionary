@@ -1,0 +1,104 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  color: #333333;
+}
+
+table, th, td {
+  border: solid 1px #000;
+  padding: 10px;
+}
+
+table {
+    border-collapse:collapse;
+    caption-side:bottom;
+}
+
+caption {
+  font-size: 16px;
+  font-weight: bold;
+  padding-top: 5px;
+}
+  </style>
+  <body>
+  <div class="container">
+    <h1>Search the word which you get the meaning </h1>
+    <!-- <form action="" onSubmit="handlesubmit() ; return false">
+
+      <input type="text" id="search_word" value="" placeholder="enter you word">
+      <input type="submit" value="Search"/>
+    </form> -->
+    <form onsubmit="myFunction() ; return false">
+      <input type="text" id="search_word" name="search_word" value="" placeholder="enter you word">
+      <input type="submit" value="Submit">
+    </form>
+    <div class="output">
+      
+    </div>
+  </div>  
+  </body>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+  const getTodoItems = async (wordsearch) => {
+  const BASE_URL = 'https://api.dictionaryapi.dev/api/v2/entries/en';
+  try {
+    const response = await axios.get(`${BASE_URL}/${wordsearch}`);
+    const todoItems = response.data;
+    return todoItems;
+
+  } catch (errors) {
+    console.error(errors);
+  }
+  
+};
+
+async function myFunction() {
+  let search_word = document.getElementById("search_word").value
+  // console.log(search_word); 
+  let defination = await getTodoItems(search_word)
+console.log(defination)
+let output = document.querySelector('.output')
+  output.innerHTML = '';
+  
+  if(defination !== undefined){
+    i= 0;
+    defination.forEach(item => {
+      console.log(item)
+console.log(i + " items  first rule")
+      let meanings = item.meanings;
+        meanings.forEach(meaning => {
+
+        i= 0;
+        meaning.definitions.forEach(definations =>{
+        // console.log(definations.definition)
+        output.innerHTML += `
+          <br><div>Definaiton <b>${meaning.partOfSpeech}: </b><span> ${definations.definition}</span></div><br>
+      
+        `;
+        i ++;
+        })
+      });
+      i ++;
+    });
+  } else {
+    return output.innerHTML += `
+          <p> No Found any Meaning relevent to <b>${search_word}</b> :</p>
+        `;
+    
+  }
+
+}
+
+</script>
+</html>
